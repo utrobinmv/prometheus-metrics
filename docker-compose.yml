@@ -1,0 +1,44 @@
+services:
+  prometheus:
+    image: prom/prometheus:v3.2.1
+    container_name: prometheus
+    ports:
+      - "${PROMETHEUS_PORT:-9090}:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./data/prometheus:/prometheus
+    environment:
+      - VLLM_METRICS_HOST=${VLLM_METRICS_HOST:-192.168.45.10}
+      - VLLM_METRICS_PORT=${VLLM_METRICS_PORT:-30000}
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=${PROMETHEUS_RETENTION_TIME:-15d}'
+      - '--storage.tsdb.retention.size=${PROMETHEUS_RETENTION_SIZE:-10GB}'
+      - '--web.enable-lifecycle'
+      - '--web.enable-admin-api'
+    restart: unless-stopped
+    network_mode: host
+    labels:
+      org.label-schema.group: "prometheus-metrics"
+
+  grafana:
+    image: grafana/grafana:11.5.2
+    container_name: grafana
+    ports:
+      - "${GRAFANA_PORT:-3000}:3000"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./data/grafana:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_ROOT_URL=http://localhost:${GRAFANA_PORT:-3000}
+      - PROMETHEUS_PORT=${PROMETHEUS_PORT:-9090}
+    restart: unless-stopped
+    network_mode: host
+    depends_on:
+      - prometheus
+    labels:
+      org.label-schema.group: "prometheus-metrics"

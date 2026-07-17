@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Stub: это Docker-проект, venv не требуется
+#
+# ИСПОЛЬЗОВАНИЕ:
+#   docker compose up -d    # запустить
+#   docker compose down     # остановить
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    echo "Ошибка: это Docker-проект, venv не нужен"
+    echo "Используй: docker compose up -d"
+    exit 1
+fi
