@@ -12,6 +12,24 @@ scrape_configs:
         labels:
           instance: 'vllm-server'
 
+  - job_name: 'sglang'
+    scrape_interval: 15s
+    metrics_path: '/metrics'
+    static_configs:
+      - targets:
+          - '${SGLANG_METRICS_HOST}:${SGLANG_METRICS_PORT}'
+        labels:
+          instance: 'sglang-server'
+
+  - job_name: 'litellm'
+    scrape_interval: 15s
+    metrics_path: '/metrics'
+    static_configs:
+      - targets:
+          - '${LITELLM_METRICS_HOST}:${LITELLM_METRICS_PORT}'
+        labels:
+          instance: 'litellm-proxy'
+
   - job_name: 'prometheus'
     scrape_interval: 30s
     static_configs:

@@ -1,10 +1,9 @@
 apiVersion: 1
 
 providers:
-  - name: 'vLLM Dashboards'
+  - name: 'LLM Server Dashboards'
     orgId: 1
-    folder: 'vLLM'
-    folderUid: 'vllm'
+    folder: ''
     type: file
     disableDeletion: false
     updateIntervalSeconds: 30

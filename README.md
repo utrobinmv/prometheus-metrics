@@ -1,8 +1,8 @@
 # prometheus-metrics
 
-Мониторинг vLLM сервера через Prometheus + Grafana с визуализацией в браузере.
+Мониторинг vLLM, SGLang и LiteLLM серверов через Prometheus + Grafana с визуализацией в браузере.
 
-Собирает метрики с endpoint `/metrics` вашего vLLM сервера, хранит историю и отображает графики в реальном времени через Grafana дашборд.
+Собирает метрики с endpoint `/metrics` ваших серверов, хранит историю и отображает графики в реальном времени через Grafana дашборды.
 
 ## Установка
 
@@ -10,7 +10,7 @@
 git clone https://github.com/krapotkin/prometheus-metrics.git
 cd prometheus-metrics
 
-# Настроить .env (опционально)
+# Настроить .env (адреса серверов)
 cp .env.example .env
 nano .env
 ```
@@ -18,7 +18,7 @@ nano .env
 ## Быстрый старт
 
 ```bash
-# 1. Настроить .env (адрес vLLM сервера)
+# 1. Настроить .env (адреса серверов)
 nano .env
 
 # 2. Запустить
@@ -34,6 +34,10 @@ nano .env
 ```
 vLLM сервер (192.168.45.10:30000)
     |
+SGLang сервер (192.168.45.10:30070)
+    |
+LiteLLM proxy (192.168.45.30:31003)
+    |
     |  GET /metrics (Prometheus format)
     v
 Prometheus (localhost:9090)
@@ -46,43 +50,26 @@ Grafana (localhost:3000)
 Браузер -- графики, алерты, история
 ```
 
-## Что мониторит
+## Дашборды
 
-### SERVER STATUS
-- Requests Running / Waiting / Swapped
-- KV Cache Usage (с цветовой индикацией: green/yellow/red)
-- Estimated FLOPs/GPU
-- Total Preemptions
-- Engine PPU update time
+### vLLM Server Metrics (16 панелей)
+- **SERVER STATUS** -- running/waiting/swapped requests, KV cache, FLOPs, preemptions
+- **THROUGHPUT** -- token rates, success rate, cache hit rates
+- **LATENCY** -- 8 метрик (TTFT, inter-token, e2e, prefill, decode, queue, inference, time/output-token), p50/p90/p99
+- **REQUEST DETAILS** -- prompt tokens, gen tokens, iteration tokens (p50/p95)
+- **HTTP + PROCESS** -- HTTP rate/latency, memory, CPU, FDs, GC
 
-### THROUGHPUT
-- Token throughput (prompt, generation, cached) в токенах/сек
-- Request success rate по reason (stop/length/error)
-- Average throughput из gauge-метрик vLLM
-- Cache hit rates (prefix, external prefix, mm cache)
+### SGLang Server Metrics (17 панелей)
+- **SERVER STATUS** -- running/queue requests, token usage, cache hit rate, gen throughput
+- **THROUGHPUT** -- prompt/gen token rates, gen throughput
+- **LATENCY** -- TTFT, e2e latency, time per output token, func latency (p50/p90/p99)
+- **CACHE** -- cache hit rate over time
 
-### LATENCY (Percentiles)
-- TTFT (Time to First Token) -- p50/p90/p99
-- Inter-Token Latency -- p50/p90/p99
-- End-to-End Request Latency -- p50/p90/p99
-- Prefill Time -- p50/p90/p99
-- Decode Time -- p50/p90/p99
-- Queue Time -- p50/p90/p99
-- Inference Time -- p50/p90/p99
-- Time Per Output Token -- p50/p90/p99
-
-### REQUEST DETAILS
-- Prompt tokens per request (p50/p95)
-- Generation tokens per request (p50/p95)
-- Iteration tokens (p50/p95)
-
-### HTTP + PROCESS
-- HTTP requests rate по method/status
-- HTTP latency (p50/p95/p99)
-- Process memory (RSS/Virtual)
-- CPU usage
-- File descriptors
-- Python GC collections (gen 0/1/2)
+### LiteLLM Proxy Metrics (25 панелей)
+- **PROXY STATUS** -- request rate, failed rate, success rate, in-flight, callback failures, cooled down deployments
+- **TOKENS AND SPEND** -- token rates, cumulative tokens, spend in USD
+- **LATENCY** -- total, LLM API, TTFT, per-output-token, overhead, queue time (p50/p90/p99)
+- **HTTP + PROCESS** -- HTTP rate/latency, memory, CPU, FDs, GC
 
 ## Управление
 
