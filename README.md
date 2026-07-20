@@ -1,6 +1,6 @@
 # prometheus-metrics
 
-Мониторинг vLLM, SGLang и LiteLLM серверов через Prometheus + Grafana с визуализацией в браузере.
+Мониторинг vLLM и LiteLLM серверов через Prometheus + Grafana с визуализацией в браузере.
 
 Собирает метрики с endpoint `/metrics` ваших серверов, хранит историю и отображает графики в реальном времени через Grafana дашборды.
 
@@ -32,9 +32,9 @@ nano .env
 ## Архитектура
 
 ```
-vLLM сервер (192.168.45.10:30000)
+vLLM сервер 1 (192.168.45.10:30000)
     |
-SGLang сервер (192.168.45.10:30070)
+vLLM сервер 2 (192.168.45.10:30070)
     |
 LiteLLM proxy (192.168.45.30:31003)
     |
@@ -52,18 +52,14 @@ Grafana (localhost:3000)
 
 ## Дашборды
 
-### vLLM Server Metrics (16 панелей)
+### vLLM Server Metrics (29 панелей)
+Вверху дашборда -- dropdown **Server** для выбора одного или обоих серверов.
+
 - **SERVER STATUS** -- running/waiting/swapped requests, KV cache, FLOPs, preemptions
-- **THROUGHPUT** -- token rates, success rate, cache hit rates
+- **THROUGHPUT** -- prompt tokens/s, generation tokens/s, cache hit rates (раздельные графики)
 - **LATENCY** -- 8 метрик (TTFT, inter-token, e2e, prefill, decode, queue, inference, time/output-token), p50/p90/p99
 - **REQUEST DETAILS** -- prompt tokens, gen tokens, iteration tokens (p50/p95)
 - **HTTP + PROCESS** -- HTTP rate/latency, memory, CPU, FDs, GC
-
-### SGLang Server Metrics (17 панелей)
-- **SERVER STATUS** -- running/queue requests, token usage, cache hit rate, gen throughput
-- **THROUGHPUT** -- prompt/gen token rates, gen throughput
-- **LATENCY** -- TTFT, e2e latency, time per output token, func latency (p50/p90/p99)
-- **CACHE** -- cache hit rate over time
 
 ### LiteLLM Proxy Metrics (25 панелей)
 - **PROXY STATUS** -- request rate, failed rate, success rate, in-flight, callback failures, cooled down deployments

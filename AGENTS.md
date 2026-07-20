@@ -21,8 +21,7 @@ prometheus-metrics/
 │   │   └── datasource.yml.tpl           # авто-подключение Prometheus
 │   └── dashboards/
 │       ├── dashboards.yml               # provisioning provider
-│       ├── vllm-dashboard.json          # дашборд vLLM (16 панелей)
-│       ├── sglang-dashboard.json        # дашборд SGLang (17 панелей)
+│       ├── vllm-dashboard.json          # дашборд vLLM (29 панелей, multi-instance)
 │       └── litellm-dashboard.json       # дашборд LiteLLM (25 панелей)
 ├── start.sh                              # envsubst + docker compose up
 ├── .venv                                 # stub (Docker проект)
@@ -33,13 +32,15 @@ prometheus-metrics/
 
 ## Мониторинг
 
-Три сервера, три дашборда:
+Два сервера, два дашборда:
 
 | Сервер | Адрес | Порт | Дашборд | Панели |
 |--------|-------|------|---------|--------|
-| vLLM | 192.168.45.10 | 30000 | vLLM Server Metrics | 16 |
-| SGLang | 192.168.45.10 | 30070 | SGLang Server Metrics | 17 |
+| vLLM 1 | 192.168.45.10 | 30000 | vLLM Server Metrics | 29 |
+| vLLM 2 | 192.168.45.10 | 30070 | vLLM Server Metrics | 29 |
 | LiteLLM | 192.168.45.30 | 31003 | LiteLLM Proxy Metrics | 25 |
+
+**vLLM дашборд поддерживает несколько серверов.** Вверху -- dropdown "Server" для выбора одного или обоих серверов. Метрики обоих серверов отображаются на одних графиках разными цветами.
 
 ## Данные
 
@@ -50,8 +51,8 @@ prometheus-metrics/
 ## Конфигурация
 
 `.env` переменные:
-- `VLLM_METRICS_HOST/PORT` -- vLLM сервер (по умолчанию 192.168.45.10:30000)
-- `SGLANG_METRICS_HOST/PORT` -- SGLang сервер (по умолчанию 192.168.45.10:30070)
+- `VLLM1_METRICS_HOST/PORT` -- vLLM сервер 1 (по умолчанию 192.168.45.10:30000)
+- `VLLM2_METRICS_HOST/PORT` -- vLLM сервер 2 (по умолчанию 192.168.45.10:30070)
 - `LITELLM_METRICS_HOST/PORT` -- LiteLLM proxy (по умолчанию 192.168.45.30:31003)
 - `GRAFANA_ADMIN_USER/PASSWORD` -- логин Grafana
 - `PROMETHEUS_PORT/GRAFANA_PORT` -- порты на хосте
@@ -68,18 +69,13 @@ prometheus-metrics/
 
 ## Grafana дашборды
 
-### vLLM Server Metrics (16 панелей)
-1. **SERVER STATUS** -- running/waiting/swapped requests, KV cache, FLOPs, preemptions
-2. **THROUGHPUT** -- token rates, success rate, cache hit rates
-3. **LATENCY** -- 8 метрик (TTFT, inter-token, e2e, prefill, decode, queue, inference, time/output-token), p50/p90/p99
-4. **REQUEST DETAILS** -- prompt tokens, gen tokens, iteration tokens (p50/p95)
-5. **HTTP + PROCESS** -- HTTP rate/latency, memory, CPU, FDs, GC
-
-### SGLang Server Metrics (17 панелей)
-1. **SERVER STATUS** -- running/queue requests, token usage, cache hit rate, gen throughput
-2. **THROUGHPUT** -- prompt/gen token rates, gen throughput
-3. **LATENCY** -- TTFT, e2e latency, time per output token, func latency (p50/p90/p99)
-4. **CACHE** -- cache hit rate over time
+### vLLM Server Metrics (29 панелей)
+- **SERVER STATUS** -- running/waiting/swapped requests, KV cache, FLOPs, preemptions
+- **THROUGHPUT** -- prompt tokens/s, generation tokens/s, cache hit rates (раздельные графики)
+- **LATENCY** -- 8 метрик (TTFT, inter-token, e2e, prefill, decode, queue, inference, time/output-token), p50/p90/p99
+- **REQUEST DETAILS** -- prompt tokens, gen tokens, iteration tokens (p50/p95)
+- **HTTP + PROCESS** -- HTTP rate/latency, memory, CPU, FDs, GC
+- **Variable `server`** -- dropdown для выбора vllm-1 / vllm-2 / All
 
 ### LiteLLM Proxy Metrics (25 панелей)
 1. **PROXY STATUS** -- request rate, failed rate, success rate, in-flight, callback failures, cooled down deployments
@@ -93,16 +89,12 @@ prometheus-metrics/
 - Дашборды provision-ятся автоматически при первом запуске Grafana
 - Prometheus хранит данные на диске -- `docker compose down -v` удалит всё
 - `start.sh` генерирует конфиги из .tpl через envsubst (Prometheus не раскрывает переменные в YAML)
+- vLLM дашборд -- multi-instance: один дашборд для обоих серверов, переключение через dropdown
 
 ## Метрики
 
 ### vLLM
 Полный список: см. `vllm-metrics/tests/test_data/full_vllm_metrics.txt` или `vllm-metrics/README.md`.
-
-### SGLang
-- **gauge**: num_running_reqs, num_queue_reqs, token_usage, cache_hit_rate, num_used_tokens, gen_throughput
-- **counter**: prompt_tokens_total, generation_tokens_total
-- **histogram**: time_to_first_token_seconds, e2e_request_latency_seconds, time_per_output_token_seconds, func_latency_seconds
 
 ### LiteLLM
 Полный список: см. `litellm-metrics/AGENTS.md`.
