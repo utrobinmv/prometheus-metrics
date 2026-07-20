@@ -16,6 +16,15 @@ scrape_configs:
         labels:
           instance: 'vllm-2'
 
+  - job_name: 'sglang'
+    scrape_interval: 15s
+    metrics_path: '/metrics'
+    static_configs:
+      - targets:
+          - '${SGLANG_METRICS_HOST}:${SGLANG_METRICS_PORT}'
+        labels:
+          instance: 'sglang-server'
+
   - job_name: 'litellm'
     scrape_interval: 15s
     metrics_path: '/metrics'
