@@ -709,7 +709,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.50, sum by (instance, le) (rate(vllm:time_to_first_token_seconds{instance=~\"$server\"}[5m])))",
+          "expr": "histogram_quantile(0.50, sum by (instance, le) (rate(vllm:time_to_first_token_seconds_bucket{instance=~\"$server\"}[5m])))",
           "legendFormat": "{{instance}} p50",
           "refId": "A"
         },
@@ -718,7 +718,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.90, sum by (instance, le) (rate(vllm:time_to_first_token_seconds{instance=~\"$server\"}[5m])))",
+          "expr": "histogram_quantile(0.90, sum by (instance, le) (rate(vllm:time_to_first_token_seconds_bucket{instance=~\"$server\"}[5m])))",
           "legendFormat": "{{instance}} p90",
           "refId": "B"
         },
@@ -727,7 +727,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.99, sum by (instance, le) (rate(vllm:time_to_first_token_seconds{instance=~\"$server\"}[5m])))",
+          "expr": "histogram_quantile(0.99, sum by (instance, le) (rate(vllm:time_to_first_token_seconds_bucket{instance=~\"$server\"}[5m])))",
           "legendFormat": "{{instance}} p99",
           "refId": "C"
         }
@@ -777,7 +777,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.50, sum by (instance, le) (rate(vllm:inter_token_latency_seconds{instance=~\"$server\"}[5m])))",
+          "expr": "histogram_quantile(0.50, sum by (instance, le) (rate(vllm:inter_token_latency_seconds_bucket{instance=~\"$server\"}[5m])))",
           "legendFormat": "{{instance}} p50",
           "refId": "A"
         },
@@ -786,7 +786,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.90, sum by (instance, le) (rate(vllm:inter_token_latency_seconds{instance=~\"$server\"}[5m])))",
+          "expr": "histogram_quantile(0.90, sum by (instance, le) (rate(vllm:inter_token_latency_seconds_bucket{instance=~\"$server\"}[5m])))",
           "legendFormat": "{{instance}} p90",
           "refId": "B"
         },
@@ -795,7 +795,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.99, sum by (instance, le) (rate(vllm:inter_token_latency_seconds{instance=~\"$server\"}[5m])))",
+          "expr": "histogram_quantile(0.99, sum by (instance, le) (rate(vllm:inter_token_latency_seconds_bucket{instance=~\"$server\"}[5m])))",
           "legendFormat": "{{instance}} p99",
           "refId": "C"
         }
@@ -845,7 +845,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.50, sum by (instance, le) (rate(vllm:e2e_request_latency_seconds{instance=~\"$server\"}[5m])))",
+          "expr": "histogram_quantile(0.50, sum by (instance, le) (rate(vllm:e2e_request_latency_seconds_bucket{instance=~\"$server\"}[5m])))",
           "legendFormat": "{{instance}} p50",
           "refId": "A"
         },
@@ -854,7 +854,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.90, sum by (instance, le) (rate(vllm:e2e_request_latency_seconds{instance=~\"$server\"}[5m])))",
+          "expr": "histogram_quantile(0.90, sum by (instance, le) (rate(vllm:e2e_request_latency_seconds_bucket{instance=~\"$server\"}[5m])))",
           "legendFormat": "{{instance}} p90",
           "refId": "B"
         },
@@ -863,7 +863,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.99, sum by (instance, le) (rate(vllm:e2e_request_latency_seconds{instance=~\"$server\"}[5m])))",
+          "expr": "histogram_quantile(0.99, sum by (instance, le) (rate(vllm:e2e_request_latency_seconds_bucket{instance=~\"$server\"}[5m])))",
           "legendFormat": "{{instance}} p99",
           "refId": "C"
         }
@@ -913,7 +913,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.50, sum by (instance, le) (rate(vllm:request_prefill_time_seconds{instance=~\"$server\"}[5m])))",
+          "expr": "histogram_quantile(0.50, sum by (instance, le) (rate(vllm:request_prefill_time_seconds_bucket{instance=~\"$server\"}[5m])))",
           "legendFormat": "{{instance}} p50",
           "refId": "A"
         },
@@ -922,7 +922,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.90, sum by (instance, le) (rate(vllm:request_prefill_time_seconds{instance=~\"$server\"}[5m])))",
+          "expr": "histogram_quantile(0.90, sum by (instance, le) (rate(vllm:request_prefill_time_seconds_bucket{instance=~\"$server\"}[5m])))",
           "legendFormat": "{{instance}} p90",
           "refId": "B"
         },
@@ -931,7 +931,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.99, sum by (instance, le) (rate(vllm:request_prefill_time_seconds{instance=~\"$server\"}[5m])))",
+          "expr": "histogram_quantile(0.99, sum by (instance, le) (rate(vllm:request_prefill_time_seconds_bucket{instance=~\"$server\"}[5m])))",
           "legendFormat": "{{instance}} p99",
           "refId": "C"
         }
@@ -981,7 +981,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.50, sum by (instance, le) (rate(vllm:request_decode_time_seconds{instance=~\"$server\"}[5m])))",
+          "expr": "histogram_quantile(0.50, sum by (instance, le) (rate(vllm:request_decode_time_seconds_bucket{instance=~\"$server\"}[5m])))",
           "legendFormat": "{{instance}} p50",
           "refId": "A"
         },
@@ -990,7 +990,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.90, sum by (instance, le) (rate(vllm:request_decode_time_seconds{instance=~\"$server\"}[5m])))",
+          "expr": "histogram_quantile(0.90, sum by (instance, le) (rate(vllm:request_decode_time_seconds_bucket{instance=~\"$server\"}[5m])))",
           "legendFormat": "{{instance}} p90",
           "refId": "B"
         },
@@ -999,7 +999,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.99, sum by (instance, le) (rate(vllm:request_decode_time_seconds{instance=~\"$server\"}[5m])))",
+          "expr": "histogram_quantile(0.99, sum by (instance, le) (rate(vllm:request_decode_time_seconds_bucket{instance=~\"$server\"}[5m])))",
           "legendFormat": "{{instance}} p99",
           "refId": "C"
         }
@@ -1049,7 +1049,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.50, sum by (instance, le) (rate(vllm:request_queue_time_seconds{instance=~\"$server\"}[5m])))",
+          "expr": "histogram_quantile(0.50, sum by (instance, le) (rate(vllm:request_queue_time_seconds_bucket{instance=~\"$server\"}[5m])))",
           "legendFormat": "{{instance}} p50",
           "refId": "A"
         },
@@ -1058,7 +1058,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.90, sum by (instance, le) (rate(vllm:request_queue_time_seconds{instance=~\"$server\"}[5m])))",
+          "expr": "histogram_quantile(0.90, sum by (instance, le) (rate(vllm:request_queue_time_seconds_bucket{instance=~\"$server\"}[5m])))",
           "legendFormat": "{{instance}} p90",
           "refId": "B"
         },
@@ -1067,7 +1067,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.99, sum by (instance, le) (rate(vllm:request_queue_time_seconds{instance=~\"$server\"}[5m])))",
+          "expr": "histogram_quantile(0.99, sum by (instance, le) (rate(vllm:request_queue_time_seconds_bucket{instance=~\"$server\"}[5m])))",
           "legendFormat": "{{instance}} p99",
           "refId": "C"
         }
@@ -1117,7 +1117,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.50, sum by (instance, le) (rate(vllm:request_inference_time_seconds{instance=~\"$server\"}[5m])))",
+          "expr": "histogram_quantile(0.50, sum by (instance, le) (rate(vllm:request_inference_time_seconds_bucket{instance=~\"$server\"}[5m])))",
           "legendFormat": "{{instance}} p50",
           "refId": "A"
         },
@@ -1126,7 +1126,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.90, sum by (instance, le) (rate(vllm:request_inference_time_seconds{instance=~\"$server\"}[5m])))",
+          "expr": "histogram_quantile(0.90, sum by (instance, le) (rate(vllm:request_inference_time_seconds_bucket{instance=~\"$server\"}[5m])))",
           "legendFormat": "{{instance}} p90",
           "refId": "B"
         },
@@ -1135,7 +1135,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.99, sum by (instance, le) (rate(vllm:request_inference_time_seconds{instance=~\"$server\"}[5m])))",
+          "expr": "histogram_quantile(0.99, sum by (instance, le) (rate(vllm:request_inference_time_seconds_bucket{instance=~\"$server\"}[5m])))",
           "legendFormat": "{{instance}} p99",
           "refId": "C"
         }
@@ -1185,7 +1185,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.50, sum by (instance, le) (rate(vllm:request_time_per_output_token_seconds{instance=~\"$server\"}[5m])))",
+          "expr": "histogram_quantile(0.50, sum by (instance, le) (rate(vllm:request_time_per_output_token_seconds_bucket{instance=~\"$server\"}[5m])))",
           "legendFormat": "{{instance}} p50",
           "refId": "A"
         },
@@ -1194,7 +1194,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.90, sum by (instance, le) (rate(vllm:request_time_per_output_token_seconds{instance=~\"$server\"}[5m])))",
+          "expr": "histogram_quantile(0.90, sum by (instance, le) (rate(vllm:request_time_per_output_token_seconds_bucket{instance=~\"$server\"}[5m])))",
           "legendFormat": "{{instance}} p90",
           "refId": "B"
         },
@@ -1203,7 +1203,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.99, sum by (instance, le) (rate(vllm:request_time_per_output_token_seconds{instance=~\"$server\"}[5m])))",
+          "expr": "histogram_quantile(0.99, sum by (instance, le) (rate(vllm:request_time_per_output_token_seconds_bucket{instance=~\"$server\"}[5m])))",
           "legendFormat": "{{instance}} p99",
           "refId": "C"
         }
@@ -1265,7 +1265,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.50, sum by (instance, le) (rate(vllm:request_prompt_tokens{instance=~\"$server\"}[5m])))",
+          "expr": "histogram_quantile(0.50, sum by (instance, le) (rate(vllm:request_prompt_tokens_bucket{instance=~\"$server\"}[5m])))",
           "legendFormat": "{{instance}} p50",
           "refId": "A"
         },
@@ -1274,7 +1274,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.95, sum by (instance, le) (rate(vllm:request_prompt_tokens{instance=~\"$server\"}[5m])))",
+          "expr": "histogram_quantile(0.95, sum by (instance, le) (rate(vllm:request_prompt_tokens_bucket{instance=~\"$server\"}[5m])))",
           "legendFormat": "{{instance}} p95",
           "refId": "B"
         }
@@ -1324,7 +1324,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.50, sum by (instance, le) (rate(vllm:request_generation_tokens{instance=~\"$server\"}[5m])))",
+          "expr": "histogram_quantile(0.50, sum by (instance, le) (rate(vllm:request_generation_tokens_bucket{instance=~\"$server\"}[5m])))",
           "legendFormat": "{{instance}} p50",
           "refId": "A"
         },
@@ -1333,7 +1333,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.95, sum by (instance, le) (rate(vllm:request_generation_tokens{instance=~\"$server\"}[5m])))",
+          "expr": "histogram_quantile(0.95, sum by (instance, le) (rate(vllm:request_generation_tokens_bucket{instance=~\"$server\"}[5m])))",
           "legendFormat": "{{instance}} p95",
           "refId": "B"
         }
@@ -1383,7 +1383,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.50, sum by (instance, le) (rate(vllm:iteration_tokens_total{instance=~\"$server\"}[5m])))",
+          "expr": "histogram_quantile(0.50, sum by (instance, le) (rate(vllm:iteration_tokens_total_bucket{instance=~\"$server\"}[5m])))",
           "legendFormat": "{{instance}} p50",
           "refId": "A"
         },
@@ -1392,7 +1392,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.95, sum by (instance, le) (rate(vllm:iteration_tokens_total{instance=~\"$server\"}[5m])))",
+          "expr": "histogram_quantile(0.95, sum by (instance, le) (rate(vllm:iteration_tokens_total_bucket{instance=~\"$server\"}[5m])))",
           "legendFormat": "{{instance}} p95",
           "refId": "B"
         }
