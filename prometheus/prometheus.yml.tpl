@@ -25,6 +25,15 @@ scrape_configs:
         labels:
           instance: 'sglang-server'
 
+  - job_name: 'llamacpp'
+    scrape_interval: 15s
+    metrics_path: '/metrics'
+    static_configs:
+      - targets:
+          - '${LLAMACPP_METRICS_HOST}:${LLAMACPP_METRICS_PORT}'
+        labels:
+          instance: 'llamacpp-server'
+
   - job_name: 'litellm'
     scrape_interval: 15s
     metrics_path: '/metrics'
