@@ -22,11 +22,14 @@ prometheus-metrics/
 │   └── dashboards/
 │       ├── dashboards.yml               # provisioning provider
 │       ├── vllm-dashboard.json          # дашборд vLLM (29 панелей, multi-instance)
+│       ├── sglang-dashboard.json        # дашборд SGLang (17 панелей)
+│       ├── llamacpp-dashboard.json      # дашборд llama.cpp (14 панелей)
 │       └── litellm-dashboard.json       # дашборд LiteLLM (25 панелей)
 ├── start.sh                              # envsubst + docker compose up
 ├── .venv                                 # stub (Docker проект)
 ├── README.md
 ├── INSTALL.md
+├── ADD_SERVER.md                         # инструкция по добавлению новых серверов
 └── AGENTS.md
 ```
 
