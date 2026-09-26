@@ -19,7 +19,7 @@ newgrp docker
 ## Шаг 2: Клонирование проекта
 
 ```bash
-git clone https://github.com/krapotkin/prometheus-metrics.git
+git clone https://github.com/utrobinmv/prometheus-metrics.git
 cd prometheus-metrics
 ```
 
@@ -33,18 +33,21 @@ nano .env
 Параметры:
 
 ```ini
-# Адрес vLLM сервера (где /metrics доступен)
+# Адреса серверов (где /metrics доступен)
 VLLM_METRICS_HOST=192.168.45.10
 VLLM_METRICS_PORT=30000
 
-# Интервал опроса (15s -- баланс между точностью и нагрузкой)
-SCRAPE_INTERVAL=15s
+SGLANG_METRICS_HOST=192.168.45.10
+SGLANG_METRICS_PORT=30070
+
+LITELLM_METRICS_HOST=192.168.45.30
+LITELLM_METRICS_PORT=31003
 
 # Grafana логин
 GRAFANA_ADMIN_USER=admin
 GRAFANA_ADMIN_PASSWORD=admin
 
-# Порты (если 3000 занят, измените)
+# Порты
 PROMETHEUS_PORT=9090
 GRAFANA_PORT=3000
 
@@ -53,12 +56,17 @@ PROMETHEUS_RETENTION_TIME=15d
 PROMETHEUS_RETENTION_SIZE=10GB
 ```
 
-ВАЖНО: Если vLLM сервер на той же машине, используйте `127.0.0.1`.
-
 ## Шаг 4: Проверка доступности метрик
 
 ```bash
-curl -s http://192.168.45.10:30000/metrics | head -20
+# vLLM
+curl -s http://192.168.45.10:30000/metrics | head -5
+
+# SGLang
+curl -s http://192.168.45.10:30070/metrics | head -5
+
+# LiteLLM
+curl -s http://192.168.45.30:31003/metrics | head -5
 ```
 
 Должен вернуться текст вида:
@@ -68,11 +76,6 @@ curl -s http://192.168.45.10:30000/metrics | head -20
 vllm:num_requests_running 3
 ...
 ```
-
-Если curl не работает -- проверьте:
-- vLLM сервер запущен
-- Порт 30000 открыт
-- Сеть между машинами работает (ping)
 
 ## Шаг 5: Запуск
 
@@ -98,20 +101,10 @@ docker ps
 - Логин: `admin`
 - Пароль: `admin` (из .env)
 
-Дашборд "vLLM Server Metrics" появится автоматически в папке "vLLM".
-
-## Шаг 8: Настройка Grafana (опционально)
-
-### Изменение периода отображения
-- Вверху дашборда: "Now-1h" -- измените на 30m, 6h, 24h, 7d
-
-### Добавление своих панелей
-- Нажмите "+" --> "Dashboard" --> "Add visualization"
-- Выберите datasource "Prometheus"
-- Введите PromQL запрос, например: `vllm:kv_cache_usage_perc`
-
-### Экспорт дашборда
-- Settings (шестерёнка) --> JSON Model --> скопируйте/сохраните
+Дашборды появятся автоматически:
+- **vLLM Server Metrics** -- в папке "vLLM"
+- **SGLang Server Metrics** -- в папке "SGLang"
+- **LiteLLM Proxy Metrics** -- в папке "LiteLLM"
 
 ## Остановка
 
@@ -123,17 +116,8 @@ docker compose down
 
 ## Troubleshooting
 
-### Grafana не видит Prometheus
-```bash
-# Проверить что Prometheus работает
-curl http://localhost:9090/api/v1/status/config
-
-# Проверить targets
-curl http://localhost:9090/api/v1/targets
-```
-
-### Метрики не собираются
-1. Проверить доступность: `curl http://<VLLM_HOST>:<VLLM_PORT>/metrics`
+### Сервер не виден (target down)
+1. Проверить доступность: `curl http://<HOST>:<PORT>/metrics`
 2. Проверить логи в терминале start.sh
 3. В Prometheus UI (порт 9090) --> Status --> Targets -- статус должен быть "UP"
 

@@ -8,9 +8,40 @@ scrape_configs:
     metrics_path: '/metrics'
     static_configs:
       - targets:
-          - '${VLLM_METRICS_HOST}:${VLLM_METRICS_PORT}'
+          - '${VLLM1_METRICS_HOST}:${VLLM1_METRICS_PORT}'
         labels:
-          instance: 'vllm-server'
+          instance: 'vllm-1'
+      - targets:
+          - '${VLLM2_METRICS_HOST}:${VLLM2_METRICS_PORT}'
+        labels:
+          instance: 'vllm-2'
+
+  - job_name: 'sglang'
+    scrape_interval: 15s
+    metrics_path: '/metrics'
+    static_configs:
+      - targets:
+          - '${SGLANG_METRICS_HOST}:${SGLANG_METRICS_PORT}'
+        labels:
+          instance: 'sglang-server'
+
+  - job_name: 'llamacpp'
+    scrape_interval: 15s
+    metrics_path: '/metrics'
+    static_configs:
+      - targets:
+          - '${LLAMACPP_METRICS_HOST}:${LLAMACPP_METRICS_PORT}'
+        labels:
+          instance: 'llamacpp-server'
+
+  - job_name: 'litellm'
+    scrape_interval: 15s
+    metrics_path: '/metrics'
+    static_configs:
+      - targets:
+          - '${LITELLM_METRICS_HOST}:${LITELLM_METRICS_PORT}'
+        labels:
+          instance: 'litellm-proxy'
 
   - job_name: 'prometheus'
     scrape_interval: 30s

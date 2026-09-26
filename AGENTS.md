@@ -5,7 +5,7 @@
 - **Prometheus v3.2.1** -- сбор и хранение метрик (TSDB)
 - **Grafana 11.5.2** -- визуализация через браузер
 - **Docker Compose** -- оркестрация контейнеров
-- **network_mode: host** -- для доступа к внешним IP (vLLM на 192.168.x.x)
+- **network_mode: host** -- для доступа к внешним IP (192.168.x.x)
 
 ## Структура
 
@@ -21,13 +21,29 @@ prometheus-metrics/
 │   │   └── datasource.yml.tpl           # авто-подключение Prometheus
 │   └── dashboards/
 │       ├── dashboards.yml               # provisioning provider
-│       └── vllm-dashboard.json          # дашборд vLLM (16 панелей)
+│       ├── vllm-dashboard.json          # дашборд vLLM (29 панелей, multi-instance)
+│       ├── sglang-dashboard.json        # дашборд SGLang (17 панелей)
+│       ├── llamacpp-dashboard.json      # дашборд llama.cpp (14 панелей)
+│       └── litellm-dashboard.json       # дашборд LiteLLM (25 панелей)
 ├── start.sh                              # envsubst + docker compose up
 ├── .venv                                 # stub (Docker проект)
 ├── README.md
 ├── INSTALL.md
+├── ADD_SERVER.md                         # инструкция по добавлению новых серверов
 └── AGENTS.md
 ```
+
+## Мониторинг
+
+Два сервера, два дашборда:
+
+| Сервер | Адрес | Порт | Дашборд | Панели |
+|--------|-------|------|---------|--------|
+| vLLM 1 | 192.168.45.10 | 30000 | vLLM Server Metrics | 29 |
+| vLLM 2 | 192.168.45.10 | 30070 | vLLM Server Metrics | 29 |
+| LiteLLM | 192.168.45.30 | 31003 | LiteLLM Proxy Metrics | 25 |
+
+**vLLM дашборд поддерживает несколько серверов.** Вверху -- dropdown "Server" для выбора одного или обоих серверов. Метрики обоих серверов отображаются на одних графиках разными цветами.
 
 ## Данные
 
@@ -38,9 +54,9 @@ prometheus-metrics/
 ## Конфигурация
 
 `.env` переменные:
-- `VLLM_METRICS_HOST` -- IP vLLM сервера (по умолчанию 192.168.45.10)
-- `VLLM_METRICS_PORT` -- порт /metrics (по умолчанию 30000)
-- `SCRAPE_INTERVAL` -- интервал опроса (15s)
+- `VLLM1_METRICS_HOST/PORT` -- vLLM сервер 1 (по умолчанию 192.168.45.10:30000)
+- `VLLM2_METRICS_HOST/PORT` -- vLLM сервер 2 (по умолчанию 192.168.45.10:30070)
+- `LITELLM_METRICS_HOST/PORT` -- LiteLLM proxy (по умолчанию 192.168.45.30:31003)
 - `GRAFANA_ADMIN_USER/PASSWORD` -- логин Grafana
 - `PROMETHEUS_PORT/GRAFANA_PORT` -- порты на хосте
 - `PROMETHEUS_RETENTION_TIME/SIZE` -- хранение данных
@@ -54,27 +70,34 @@ prometheus-metrics/
 
 Флаг `--pull` -- обновляет образы перед запуском.
 
-## Grafana дашборд
+## Grafana дашборды
 
-16 панелей в 4 секциях:
-1. **SERVER STATUS** -- running/waiting/swapped requests, KV cache, FLOPs, preemptions
-2. **THROUGHPUT** -- token rates, success rate, cache hit rates
-3. **LATENCY** -- 8 метрик (TTFT, inter-token, e2e, prefill, decode, queue, inference, time/output-token), p50/p90/p99
-4. **REQUEST DETAILS** -- prompt tokens, gen tokens, iteration tokens (p50/p95)
-5. **HTTP + PROCESS** -- HTTP rate/latency, memory, CPU, FDs, GC
+### vLLM Server Metrics (29 панелей)
+- **SERVER STATUS** -- running/waiting/swapped requests, KV cache, FLOPs, preemptions
+- **THROUGHPUT** -- prompt tokens/s, generation tokens/s, cache hit rates (раздельные графики)
+- **LATENCY** -- 8 метрик (TTFT, inter-token, e2e, prefill, decode, queue, inference, time/output-token), p50/p90/p99
+- **REQUEST DETAILS** -- prompt tokens, gen tokens, iteration tokens (p50/p95)
+- **HTTP + PROCESS** -- HTTP rate/latency, memory, CPU, FDs, GC
+- **Variable `server`** -- dropdown для выбора vllm-1 / vllm-2 / All
+
+### LiteLLM Proxy Metrics (25 панелей)
+1. **PROXY STATUS** -- request rate, failed rate, success rate, in-flight, callback failures, cooled down deployments
+2. **TOKENS AND SPEND** -- token rates, cumulative tokens, spend in USD
+3. **LATENCY** -- total, LLM API, TTFT, per-output-token, overhead, queue time (p50/p90/p99)
+4. **HTTP + PROCESS** -- HTTP rate/latency, memory, CPU, FDs, GC
 
 ## Важные замечания
 
 - `network_mode: host` -- контейнеры видят хост-сеть напрямую (нужно для доступа к 192.168.x.x)
-- Дашборд provision-ится автоматически при первом запуске Grafana
+- Дашборды provision-ятся автоматически при первом запуске Grafana
 - Prometheus хранит данные на диске -- `docker compose down -v` удалит всё
 - `start.sh` генерирует конфиги из .tpl через envsubst (Prometheus не раскрывает переменные в YAML)
+- vLLM дашборд -- multi-instance: один дашборд для обоих серверов, переключение через dropdown
 
-## Метрики vLLM
+## Метрики
 
-Полный список метрик: см. `vllm-metrics/tests/test_data/full_vllm_metrics.txt` или `vllm-metrics/README.md`.
+### vLLM
+Полный список: см. `vllm-metrics/tests/test_data/full_vllm_metrics.txt` или `vllm-metrics/README.md`.
 
-Типы метрик:
-- **gauge**: num_requests_running, num_requests_waiting, kv_cache_usage_perc, avg_prompt_throughput, avg_generation_throughput, num_requests_swapped, time_since_last_ppu_update, process_memory, process_fds
-- **counter**: prompt_tokens_total, generation_tokens_total, prompt_tokens_cached_total, request_success_total, num_preemptions_total, estimated_flops_per_gpu_total, prefix_cache_queries/hits, http_requests_total, process_cpu_seconds_total, python_gc_collections_total
-- **histogram**: time_to_first_token_seconds, inter_token_latency_seconds, e2e_request_latency_seconds, request_prefill_time_seconds, request_decode_time_seconds, request_queue_time_seconds, request_inference_time_seconds, request_time_per_output_token_seconds, request_prompt_tokens, request_generation_tokens, iteration_tokens_total, request_prefill_kv_computed_tokens, request_max_num_generation_tokens, request_params_max_tokens, http_request_duration_highr_seconds
+### LiteLLM
+Полный список: см. `litellm-metrics/AGENTS.md`.
