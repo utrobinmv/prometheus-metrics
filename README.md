@@ -7,7 +7,7 @@
 ## Установка
 
 ```bash
-git clone https://github.com/krapotkin/prometheus-metrics.git
+git clone https://github.com/utrobinmv/prometheus-metrics.git
 cd prometheus-metrics
 
 # Настроить .env (адреса серверов)

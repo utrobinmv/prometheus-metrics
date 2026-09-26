@@ -19,7 +19,7 @@ newgrp docker
 ## Шаг 2: Клонирование проекта
 
 ```bash
-git clone https://github.com/krapotkin/prometheus-metrics.git
+git clone https://github.com/utrobinmv/prometheus-metrics.git
 cd prometheus-metrics
 ```
 
